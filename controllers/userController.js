@@ -70,3 +70,14 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+
+export const getUser = async(req, res)=>{
+    try{
+        const user = await User.find();
+        res.status(200).json({message: "Admin User", data:user });
+
+    }catch(error){
+        res.status(503).json({message: "Unable to fetch the data"})
+    }
+}
