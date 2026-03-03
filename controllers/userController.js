@@ -51,33 +51,28 @@ export const loginUser = async (req, res) => {
     }
 
     //jwt token generation
-    const token = jwt.sign(
-      { _id: existingUser._id },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "1h" },
-    );
+    const token = jwt.sign({ _id: existingUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     existingUser.token = token;
 
     await existingUser.save();
 
-    res
-      .status(200)
-      .json({ message: "User Login Successfull", token: token });
+    res.status(200).json({ message: "User Login Successfull", token: token });
   } catch (error) {
     res.status(503).json({
-      message: "Server Error, Unable to Login" || error.message,
+      message: "Server Error, Unable to Login",
+      error: error.message,
     });
   }
 };
 
-
-export const getUser = async(req, res)=>{
-    try{
-        const user = await User.find();
-        res.status(200).json({message: "Admin User", data:user });
-
-    }catch(error){
-        res.status(503).json({message: "Unable to fetch the data"})
-    }
-}
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.find();
+    res.status(200).json({ message: "Admin User", data: user });
+  } catch (error) {
+    res.status(503).json({ message: "Unable to fetch the data" });
+  }
+};
