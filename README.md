@@ -94,7 +94,7 @@ npm start
 ```
 - **Response**: Returns JWT token
 
-### Get All Users (Admin Only)
+### Get User
 - **Endpoint**: `GET /api/auth/getdata`
 - **Headers**:
 ```http
