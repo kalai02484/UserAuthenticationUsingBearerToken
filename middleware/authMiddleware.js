@@ -5,31 +5,33 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const authMiddleware = async (req, res, next) => {
-  //method 1
-  //const token = req.header("Authorization");
 
-  //method 2
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    res.status(400).json({ message: "Token Missing" });
+    return res.status(401).json({
+      message: "Token Missing"
+    });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      exiresIn: "1hr",
-    });
 
-    console.log("decoded", decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = await User.findById(decoded._id).select("-password");
+    console.log("Decoded Token:", decoded);
 
-    console.log(req.user);
+    req.user = await User.findById(decoded.id).select("-password");
+
+    console.log("Authenticated User:", req.user);
 
     next();
+
   } catch (error) {
-    res
-      .status(503)
-      .json({ message: "Server Error, something went wrong", error });
+
+    return res.status(401).json({
+      message: "Invalid or Expired Token",
+      error: error.message
+    });
+
   }
 };
